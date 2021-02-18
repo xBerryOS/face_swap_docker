@@ -1,3 +1,37 @@
+# xBerry setup
+
+1. Instal nvidia-docker
+2. Build docker `Dockerfile`
+    ```bash
+    docker build -t face_swap_gpu -f Dockerfile .
+    ```
+3. Make sure that all needed models are in data directory
+    ```bash
+    cd data
+    wget http://dlib.net/files/shape_predictor_68_face_landmarks.dat.bz2
+    bzip2 -d shape_predictor_68_face_landmarks.dat.bz2
+    wget https://github.com/YuvalNirkin/face_swap/releases/download/0.9/3dmm_cnn_resnet_101.zip
+    unzip 3dmm_cnn_resnet_101.zip
+    wget https://github.com/YuvalNirkin/face_segmentation/releases/download/1.0/face_seg_fcn8s.zip
+    unzip face_seg_fcn8s.zip
+    wget https://github.com/YuvalNirkin/face_segmentation/releases/download/1.1/face_seg_fcn8s_300_no_aug.zip
+    unzip face_seg_fcn8s_300_no_aug.zip
+    rm *.zip
+    ```
+4. Modify config file in `data/test.cfg`. Especially input images data. All images has to be stored in `data/images`
+5. Run docker container with GPU support (At least 4GB of GPU memory needed)
+    ```bash
+    docker run --gpus 0 -it -v ${PWD}/data:/installations/face_swap/data face_swap bash
+    ```
+6. Inside docker got to dir and run face_swap
+    ```bash
+    cd /installations/face_swap/bin
+    ./face_swap_image --cfg ../data/test.cfg 
+    ```
+7. Image is stored on local machine in directory `data/images`
+
+PS: [face_swap application guide](https://github.com/YuvalNirkin/face_swap/wiki/Applications-Guide)
+
 # Acknowledgement
 This work is done when the author is interning at AILabs.tw
 
